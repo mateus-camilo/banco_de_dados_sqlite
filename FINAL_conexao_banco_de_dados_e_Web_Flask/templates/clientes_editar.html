@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Cliente{% endblock title %}
+
+{% block header_title %}Editar Cliente (ID: {{ cliente.id }}){% endblock header_title %}
+
+{% block content %}
+    
+    <div class="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+        <h2 class="text-xl font-semibold mb-4 text-blue-700">Detalhes do Cliente</h2>
+
+        <form action="{{ url_for('editar_cliente', id=cliente.id) }}" method="POST" class="space-y-4">
+            
+            <input type="hidden" name="id" value="{{ cliente.id }}">
+
+            <div>
+                <label for="nome" class="block text-sm font-medium text-gray-700">Nome</label>
+                <input type="text" id="nome" name="nome" value="{{ cliente.nome }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" id="email" name="email" value="{{ cliente.email }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+            </div>
+
+            <div>
+                <label for="data_nascimento" class="block text-sm font-medium text-gray-700">Data Nascimento</label>
+                <input type="date" id="data_nascimento" name="data_nascimento" value="{{ cliente.data_nascimento or '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+            </div>
+            
+            <!-- Campo total_emprestimo (Exibição apenas) -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Total de Empréstimos Ativos</label>
+                <p class="mt-1 text-lg font-bold text-blue-600">{{ cliente.total_emprestimo }}</p>
+            </div>
+
+            <div class="pt-4 flex justify-between">
+                <a href="{{ url_for('listar_clientes_route') }}" class="text-gray-600 hover:text-gray-900 font-semibold py-2 px-4 rounded-lg border border-gray-300 transition duration-150">Cancelar</a>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                    Salvar Alterações
+                </button>
+            </div>
+        </form>
+
+    </div>
+{% endblock content %}

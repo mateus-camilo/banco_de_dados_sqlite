@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}CRUD Empréstimos{% endblock title %}
+
+{% block header_title %}Gerenciamento de Empréstimos{% endblock header_title %}
+
+{% block content %}
+    
+    <!-- FORMULÁRIO DE INICIAR EMPRÉSTIMO -->
+    <section class="mb-8 p-6 border border-gray-200 rounded-lg bg-gray-50">
+        <h2 class="text-xl font-semibold mb-4 text-red-700">Iniciar Novo Empréstimo</h2>
+        <form action="{{ url_for('iniciar_emprestimo') }}" method="POST" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            
+            <div class="col-span-1">
+                <label for="id_cliente" class="block text-sm font-medium text-gray-700">Cliente</label>
+                <select id="id_cliente" name="id_cliente" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+                    <option value="">Selecione um Cliente</option>
+                    {% for cliente in clientes %}
+                        <option value="{{ cliente.id }}">{{ cliente.nome }} ({{ cliente.id }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-span-2">
+                <label for="id_livro" class="block text-sm font-medium text-gray-700">Livro Disponível</label>
+                <select id="id_livro" name="id_livro" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+                    <option value="">Selecione um Livro</option>
+                    {% for livro in livros_disp %}
+                        <option value="{{ livro.id }}">{{ livro.titulo_livro }} (Autor: {{ livro.nome_autor }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-span-1">
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                    Registrar Empréstimo
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <!-- TABELA DE EMPRÉSTIMOS -->
+    <section>
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Empréstimos Ativos e Histórico</h2>
+        <div class="overflow-x-auto rounded-lg shadow-md border">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Livro</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Data Empréstimo</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Devolução Prevista</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Data Efetiva</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for emprestimo in emprestimos %}
+                    <tr>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ emprestimo.id }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">{{ emprestimo.nome_cliente }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ emprestimo.titulo_livro }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{{ emprestimo.data_emprestimo }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{{ emprestimo.data_prevista_devolucao }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                            {% if emprestimo.data_efetiva_devolucao %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    {{ emprestimo.data_efetiva_devolucao }}
+                                </span>
+                            {% else %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    Ativo
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                            {% if not emprestimo.data_efetiva_devolucao %}
+                                <form action="{{ url_for('devolver_emprestimo', id=emprestimo.id, id_livro=emprestimo.id_livro, id_cliente=emprestimo.id_cliente) }}" method="POST" class="inline" 
+                                      onsubmit="return confirm('Confirma a devolução do livro {{ emprestimo.titulo_livro }}?');">
+                                    <button type="submit" class="text-blue-600 hover:text-blue-900 font-semibold transition duration-150 bg-transparent border-none p-0 cursor-pointer">
+                                        Devolver Agora
+                                    </button>
+                                </form>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+{% endblock content %}

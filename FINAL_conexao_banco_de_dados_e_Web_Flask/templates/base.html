@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bloco para o título específico da página -->
+    <title>{% block title %}Gerenciamento de Biblioteca{% endblock title %}</title>
+    <!-- Inclusão de Estilos e Fontes Comuns -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f4f7f9; 
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
+        
+        <!-- Bloco para o Título Principal da Aplicação -->
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">
+            {% block header_title %}Sistema de Gerenciamento de Biblioteca{% endblock header_title %}
+        </h1>
+
+        <!-- Barra de Navegação Comum -->
+    
+        <nav class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <a href="{{ url_for('index') }}" class="p-3 text-center font-bold rounded-lg shadow-md transition duration-150 bg-gray-200 hover:bg-gray-300 text-gray-700">Início</a>
+            <a href="{{ url_for('listar_clientes_route') }}" class="p-3 text-center font-bold rounded-lg shadow-md transition duration-150 bg-blue-500 text-white hover:bg-blue-600">Clientes</a>
+            <a href="{{ url_for('listar_autores_route') }}" class="p-3 text-center font-bold rounded-lg shadow-md transition duration-150 bg-green-500 text-white hover:bg-green-600">Autores</a>
+            <a href="{{ url_for('listar_livros_route') }}" class="p-3 text-center font-bold rounded-lg shadow-md transition duration-150 bg-yellow-600 text-white hover:bg-yellow-700">Livros</a>
+            <a href="{{ url_for('listar_emprestimos_route') }}" class="p-3 text-center font-bold rounded-lg shadow-md transition duration-150 bg-red-500 text-white hover:bg-red-600">Empréstimos</a>
+        </nav>
+        
+        <!-- BLOCCO PRINCIPAL DE CONTEÚDO -->
+        <main>
+            {% block content %}
+                <!-- Conteúdo específico da página será inserido aqui -->
+                <p class="text-gray-500">Nenhum conteúdo definido para esta página.</p>
+            {% endblock content %}
+        </main>
+        
+    </div>
+</body>
+</html>

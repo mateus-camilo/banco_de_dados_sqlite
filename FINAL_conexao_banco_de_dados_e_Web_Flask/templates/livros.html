@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}CRUD Livros{% endblock title %}
+
+{% block header_title %}Gerenciamento de Livros{% endblock header_title %}
+
+{% block content %}
+    
+    <!-- FORMULÁRIO DE CADASTRO -->
+    <section class="mb-8 p-6 border border-gray-200 rounded-lg bg-gray-50">
+        <h2 class="text-xl font-semibold mb-4 text-yellow-700">Adicionar Novo Livro</h2>
+        <form action="{{ url_for('adicionar_livro') }}" method="POST" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            
+            <div>
+                <label for="titulo_livro" class="block text-sm font-medium text-gray-700">Título</label>
+                <input type="text" id="titulo_livro" name="titulo_livro" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+            </div>
+
+            <div>
+                <label for="id_autor" class="block text-sm font-medium text-gray-700">Autor</label>
+                <select id="id_autor" name="id_autor" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+                    <option value="">Selecione um Autor</option>
+                    {% for autor in autores %}
+                        <option value="{{ autor.id }}">{{ autor.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="ISBN" class="block text-sm font-medium text-gray-700">ISBN</label>
+                <input type="text" id="ISBN" name="ISBN" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+            </div>
+
+            <div>
+                <label for="ano_publicacao" class="block text-sm font-medium text-gray-700">Ano Publicação</label>
+                <input type="date" id="ano_publicacao" name="ano_publicacao" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+            </div>
+
+            <div class="md:col-span-4 mt-4 flex justify-end">
+                <button type="submit" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                    Salvar Novo Livro
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <!-- TABELA DE LIVROS -->
+    <section>
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Lista de Livros Cadastrados</h2>
+        <div class="overflow-x-auto rounded-lg shadow-md border">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Autor</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ISBN</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ano</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for livro in livros %}
+                    <tr>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ livro.id }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">{{ livro.titulo_livro }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ livro.nome_autor or 'Desconhecido' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ livro.ISBN }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{{ livro.ano_publicacao }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                            {% if livro.is_emprestado == 1 %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Emprestado</span>
+                            {% else %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Disponível</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                            <a href="{{ url_for('editar_livro_route', id=livro.id) }}" 
+                               class="text-indigo-600 hover:text-indigo-900 font-semibold transition duration-150">Editar</a>
+                            
+                            <form action="{{ url_for('deletar_livro_route', id=livro.id) }}" method="POST" class="inline" 
+                                  onsubmit="return confirm('Tem certeza que deseja deletar o livro {{ livro.titulo_livro }}?');">
+                                <button type="submit" class="text-red-600 hover:text-red-900 font-semibold transition duration-150 bg-transparent border-none p-0 cursor-pointer">Deletar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+{% endblock content %}
